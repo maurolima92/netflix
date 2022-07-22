@@ -14,12 +14,14 @@ return new class extends Migration
     public function up()
     {
         Schema::create('videos', function (Blueprint $table) {
-            $table->id();
+            $table->id();            
             $table->string('title');
             $table->text('description');
             $table->text('url');
             $table->boolean('visible')->default(true);
             $table->timestamps();
+
+            $table->foreignId('categorie_id')->constrained();
         });
     }
 

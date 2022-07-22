@@ -1,11 +1,9 @@
 <h1>Listagem de vídeos</h1>
+<button><a href="{{ route('categories.index')}}">Listar Categorias</a></button>
+<button><a href="{{ route('video.index')}}">Listar Vídeos</a></button>
 <hr>
 <a href="{{ route('video.create') }}">Criar novo Vídeo</a>
-@if (session('message'))
-   <div>
-        {{ session('message') }}
-    </div> 
-@endif
+@include('layouts.includes.alerts.alerts')
 <hr>
 <form action="{{ route('video.search') }}" method="post">
     @csrf
@@ -16,7 +14,9 @@
 @foreach ($videos as $video)
     <p>{{  $video->title }} - 
         <a href="{{ route('video.show', $video->id) }}">Mais detalhes</a>
-        <a href="{{ route('video.edit', $video->id) }}">Editar</a></p>    
+        <a href="{{ route('video.edit', $video->id) }}">Editar</a>
+    </p>
+        
 @endforeach
 
 <hr>

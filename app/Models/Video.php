@@ -13,9 +13,14 @@ class Video extends Model
         'title',
         'description',
         'url',
+        'categorie_id'
     ];
 
     protected $cast = [
         'visible' => 'boolean',
     ];
+
+    public function categorie(){
+        return $this->belongsTo(Categorie::class);
+    }
 }

@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreUpdateVideo;
+use App\Models\Categorie;
 use App\Models\Video;
 use Illuminate\Http\Request;
 
 class VideoController extends Controller
 {
+    
+
     public function index(){
 
         $videos = Video::orderBy('id','DESC')->paginate(5);
@@ -15,7 +18,14 @@ class VideoController extends Controller
     }
 
     public function create(){
-        return view('videos.create');
+        $categories = Categorie::get();
+        if(!$categories->count() > 0){
+            return redirect()
+                    ->route('categories.index')
+                    ->with('message','Não existe nenhuma categoria criada para vincular com seu vídeo!
+                    Crie uma nova categoria agora!');
+        }
+        return view('videos.create', compact('categories'));
     }
 
     public function store(StoreUpdateVideo $request){
@@ -42,11 +52,13 @@ class VideoController extends Controller
                 ->with('message','Vídeo Deletado com Sucesso!');
     }
     public function edit($id){
+
+        $categories = Categorie::get();
         if(!$videos = Video::find($id)){
             return redirect()->back();
         }
         
-        return view('videos.edit', compact('videos'));
+        return view('videos.edit', compact('videos','categories'));
     }  
     public function update(StoreUpdateVideo $request , $id){
         if(!$videos = Video::find($id)){

@@ -1,8 +1,11 @@
 <h1>Detalhes do Vídeo: {{ $videos->title }}</h1>
 <ul>
+    <li><strong>ID:</strong>{{ $videos->id }}</li>
     <li><strong>Título:</strong>{{ $videos->title }}</li>
     <li><strong>Descrição:</strong>{{ $videos->description }}</li>
     <li><strong>URL:</strong>{{ $videos->url }}</li>
+    <li><strong>Categoria:</strong>{{ $videos->categorie_id }}</li>
+    
 </ul>
 <a href="{{ route('video.edit', $videos->id) }}">Editar</a></p> 
 <form action=" {{ route('video.destroy',$videos->id) }} " method="post">
