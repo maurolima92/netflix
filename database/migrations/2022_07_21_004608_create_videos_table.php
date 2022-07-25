@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('title');
             $table->text('description');
             $table->text('url');
+            $table->string('imagecp');
+            $table->string('imagebg');
             $table->boolean('visible')->default(true);
             $table->timestamps();
 

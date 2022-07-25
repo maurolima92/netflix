@@ -26,7 +26,9 @@ class StoreUpdateVideo extends FormRequest
         return [
             'title' => 'required|min:3|max:100',
             'description' => 'required|min:3|max:300',
-            'url'=> 'required|min:3|max:100'
+            'url'=> 'required|min:3|max:100',
+            'imagecp' => 'required|image|max:1024',
+            'imagebg' => 'required|image|max:1024',
         ];
     }
 }

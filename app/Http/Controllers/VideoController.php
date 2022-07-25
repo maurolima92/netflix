@@ -6,6 +6,8 @@ use App\Http\Requests\StoreUpdateVideo;
 use App\Models\Categorie;
 use App\Models\Video;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class VideoController extends Controller
 {
@@ -19,6 +21,7 @@ class VideoController extends Controller
 
     public function create(){
         $categories = Categorie::get();
+
         if(!$categories->count() > 0){
             return redirect()
                     ->route('categories.index')
@@ -29,7 +32,19 @@ class VideoController extends Controller
     }
 
     public function store(StoreUpdateVideo $request){
-        $videos = Video::create($request->all());
+        $videos = $request->all();
+        
+        
+        $videoTitle= Str::lower(str_replace(' ','-',$videos['title']));
+        
+        $extensioncp = $videos['imagecp']->getClientOriginalExtension();
+        $extensionbg = $videos['imagebg']->getClientOriginalExtension();
+
+        $videos['imagecp'] = $request->imagecp->storeAs($videoTitle, 'capa-'.$videoTitle.'-' . now() . ".{$extensioncp}");
+        $videos['imagebg'] = $request->imagebg->storeAs($videoTitle, 'background-'.$videoTitle.'-' . now() . ".{$extensionbg}");
+        
+
+        $videos = Video::create($videos);
         return redirect()
                 ->route('video.index')
                 ->with('message','Vídeo criado com Sucesso!');
@@ -46,6 +61,8 @@ class VideoController extends Controller
         if(!$videos = Video::find($id)){
             return redirect()->route('video.index');
         }
+        $videoTitle= Str::lower(str_replace(' ','-',$videos['title']));
+        Storage::deleteDirectory($videoTitle);
         $videos -> delete();
         return redirect()
                 ->route('video.index')

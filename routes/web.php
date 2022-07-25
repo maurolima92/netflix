@@ -41,3 +41,9 @@ Route::delete('categories/{id}',[CategorieController::class,'destroy'])->name('c
 Route::get('categories/edit/{id}',[CategorieController::class, 'edit'])->name('categories.edit');
 Route::put('categories/edit/{id}',[CategorieController::class, 'update'])->name('categories.update');
 Route::get('categories/{id}/videos',[CategorieController::class, 'listVideos'])->name('categories.listVideos');
+
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth'])->name('dashboard');
+
+require __DIR__.'/auth.php';

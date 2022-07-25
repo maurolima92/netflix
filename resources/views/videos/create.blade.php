@@ -14,12 +14,13 @@
     @endif
 
 
-    <form action="{{ route('video.store') }}" method="post" >
+    <form action="{{ route('video.store') }}" method="post" enctype="multipart/form-data">
         @csrf
         <input type="text" name="title" id="title" placeholder="Título" value="{{ old('title') }}">
         <textarea name="description" id="description" cols="30" rows="10" >{{ old('description') }}</textarea>
         <input type="text" name="url" id="url" placeholder="URl" value="{{old('url')}}">
-
+        <input type="file" name="imagecp" id="imagecp" value="{{old('imagecp')}}">
+        <input type="file" name="imagebg" id="imagebg" value="{{old('imagebg')}}">
         <select name="categorie_id">
             @foreach ($categories as $categorie)
                 <option id="{{$categorie->id}}"  value="{{$categorie->id}}">{{$categorie->title}} - {{$categorie->id}}</option>
