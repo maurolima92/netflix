@@ -15,8 +15,11 @@ class VideoController extends Controller
 
     public function index(){
 
-        $videos = Video::orderBy('id','DESC')->paginate(5);
-        return view('videos.index', compact('videos'));
+      
+        $capaVideo = Video::all()->random();
+
+        $videos = Video::orderBy('id','DESC')->paginate(8);
+        return view('videos.index', compact('videos','capaVideo'));
     }
 
     public function create(){
@@ -32,16 +35,19 @@ class VideoController extends Controller
     }
 
     public function store(StoreUpdateVideo $request){
+
         $videos = $request->all();
         
+        $categories = Categorie::find($videos['categorie_id']);
+        $nameCategories = Str::lower(str_replace(' ','-',$categories['title']));
         
         $videoTitle= Str::lower(str_replace(' ','-',$videos['title']));
         
         $extensioncp = $videos['imagecp']->getClientOriginalExtension();
         $extensionbg = $videos['imagebg']->getClientOriginalExtension();
 
-        $videos['imagecp'] = $request->imagecp->storeAs($videoTitle, 'capa-'.$videoTitle.'-' . now() . ".{$extensioncp}");
-        $videos['imagebg'] = $request->imagebg->storeAs($videoTitle, 'background-'.$videoTitle.'-' . now() . ".{$extensionbg}");
+        $videos['imagecp'] = $request->imagecp->storeAs($nameCategories.'/'.$videoTitle, 'capa-'.$videoTitle.'-' . now() . ".{$extensioncp}");
+        $videos['imagebg'] = $request->imagebg->storeAs($nameCategories.'/'.$videoTitle, 'background-'.$videoTitle.'-' . now() . ".{$extensionbg}");
         
 
         $videos = Video::create($videos);
@@ -61,8 +67,17 @@ class VideoController extends Controller
         if(!$videos = Video::find($id)){
             return redirect()->route('video.index');
         }
+
+        //pegando a categoria do video
+        $categories = Categorie::find($videos['categorie_id']);
+        
+        //colocando em minisculo o nome do video e o nome da categoria para o path de exclusão
+        $nameCategories = Str::lower(str_replace(' ','-',$categories['title']));
         $videoTitle= Str::lower(str_replace(' ','-',$videos['title']));
-        Storage::deleteDirectory($videoTitle);
+        
+        // Excluindo o diretorio do vídeo
+        Storage::deleteDirectory($nameCategories.'/'.$videoTitle);
+
         $videos -> delete();
         return redirect()
                 ->route('video.index')
@@ -83,7 +98,7 @@ class VideoController extends Controller
         }
         $videos->update($request->all());
         return redirect()
-                ->route('video.index')
+                ->route('video.show',$videos->id)
                 ->with('message','Vídeo editado com Sucesso!');
     }
     public function search(Request $request){
@@ -92,10 +107,12 @@ class VideoController extends Controller
         //Para não perder as informações da pesquisa quando realizar a paginação na hora da pesquisa
         //pegando todas as informações do formulário EXETO o _token
 
+       
+
         $videos = Video::where('title', 'LIKE', "%{$request->search}%")
-                        ->orWhere('description', 'LIKE', "%{$request->search}%")
-                        ->paginate(5);
+                        ->paginate(1);
         
+                     
         return view('videos.index', compact('videos','filters'));
     }
 }

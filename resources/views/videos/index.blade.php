@@ -1,35 +1,58 @@
-<h1>Listagem de vídeos</h1>
-<button><a href="{{ route('categories.index')}}">Listar Categorias</a></button>
-<button><a href="{{ route('video.index')}}">Listar Vídeos</a></button>
-<hr>
-    <div>
-    <form action="{{ route('logout') }}" method="post">
-        @csrf
-        <button>SAIR</button>
-    </form>
-    </div>
-<a href="{{ route('video.create') }}">Criar novo Vídeo</a>
-@include('layouts.includes.alerts.alerts')
-<hr>
-<form action="{{ route('video.search') }}" method="post">
-    @csrf
-    <input type="text" name="search" placeholder="Pesquisar:">
-    <button type="submit">Pesquisar</button>
-</form>
-<hr>
-@foreach ($videos as $video)
-    <div>
-        <img src='{{ url("storage/{$video->imagecp}") }}' alt="{{  $video->title }}" style="max-width: 200px">
-    <p>{{ $video->title }} - 
-        <a href="{{ route('video.show', $video->id) }}">Mais detalhes</a>
-        <a href="{{ route('video.edit', $video->id) }}">Editar</a>
-    </p>
-    </div>
+<x-app-layout>
+    <x-slot name="header">
+        @include('layouts.includes.alerts.alerts')
+    </x-slot>
+    @component('components.pages.head')
+        @slot('imagebck')             
+            
+            @if(@isset($capaVideo->imagebg))
+                {{ $capaVideo->imagebg }}
+            @else
+                default.png
+            @endif
 
+        @endslot    
+        @slot('title') 
         
-@endforeach
+            @if(@isset($filters))
+                Buscando por: {{ $filters['search'] }}
+            @else
+                Filmes, séries e muito mais. Sem limites!
+            @endif
+            
+        @endslot
+        @slot('actionform') 
+            {{ route('video.search') }}
+        @endslot
+        @slot('edit') 
+            #
+        @endslot
+        @slot('destroy') 
+            #
+        @endslot
+    @endcomponent
 
-<hr>
+    <div class="videos relative -top-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-transparent overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="max-w-2xl mx-auto py-16 px-4 pt-0 sm:px-6 lg:max-w-7xl lg:px-8">
+                    <div class="grid grid-cols-1 gap-y-10 sm:grid-cols-2 gap-x-6 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
+                        @foreach ($videos as $video)
+                            <div class="item h-full">
+                                <a href="{{ route('video.show', $video->id) }}" class="group shadow-xl transition delay-150 duration-300 ease-in-out hover:scale-125">
+                                    <div class="w-full aspect-w-1 aspect-h-1 bg-gray-200 h-full rounded-lg overflow-hidden xl:aspect-w-7 xl:aspect-h-8 ">
+                                        <img src='{{ url("storage/{$video->imagecp}") }}' alt="{{  $video->title }}" class="transition h-full delay-150 duration-300 ease-in-out hover:scale-125">
+                                    </div>
+                                </a>
+                            </div>
+                        @endforeach                            
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</x-app-layout>
 
 @if (isset($filters))
     {{ $videos->appends($filters)->links()}}

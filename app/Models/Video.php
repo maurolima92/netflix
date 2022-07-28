@@ -14,8 +14,6 @@ class Video extends Model
         'description',
         'url',
         'categorie_id',
-        'imagecp',
-        'imagebg'
     ];
 
     protected $cast = [

@@ -38,6 +38,7 @@ switch ($width) {
             @click="open = false">
         <div class="rounded-md ring-1 ring-black ring-opacity-5 {{ $contentClasses }}">
             {{ $content }}
+            <button>teste sfgdfgd</button>
         </div>
     </div>
 </div>
